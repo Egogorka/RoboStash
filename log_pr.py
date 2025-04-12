@@ -1,14 +1,18 @@
 import re
 from user_agents import parse
 
+
 def open_logfile(path: str) -> str:
-    """The function is designed to open a log file at a given path. It takes the path to the object as input and returns the contents of this file in string format. """
+    """The function is designed to open a log file at a given path.
+    It takes the path to the object as input and returns the contents of this file in string format.
+    """
     try:
         with open(path, 'r') as logs:
             text = logs.read()
             return text
     except FileNotFoundError as e:
         print(str(e))
+
 
 def get_all_logs(file: str) -> list[tuple]:
     f"""The function takes a string as input and returns a list of tuples with the following elements:\n
@@ -92,3 +96,12 @@ def ua_parser(ua_list: list) -> list[tuple]:
         parsed_ua_list.append(user_info)
 
     return parsed_ua_list
+
+
+if __name__ == "__main__":
+    raw = open_logfile("logs/logfile1.log")
+    logs = get_all_logs(raw)
+    print(logs[0])
+    print(logs[1])
+    print(logs[2])
+    print(logs[3])

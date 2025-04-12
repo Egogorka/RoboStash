@@ -1,0 +1,12 @@
+# This is an example config.
+# !!! DO NOT COMMIT REAL CONFIGS TO PUBLIC REPOSITORIES !!!
+database:
+  type: dbplug
+  host: localhost
+  port: 5432
+  username: user
+  password: pass
+  database: logs
+
+settings:
+  view: cli #or gui
