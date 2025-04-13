@@ -86,3 +86,6 @@ INSERT INTO dim_device_type (name) VALUES
 ('mobile'),
 ('tablet'),
 ('bot');
+
+TRUNCATE TABLE dim_ip, dim_api, dim_protocol, dim_referer, dim_user_agent, fact_logs RESTART IDENTITY CASCADE;
+drop table staging_logs;
