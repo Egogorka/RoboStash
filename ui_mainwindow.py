@@ -27,6 +27,7 @@ from PySide6.QtCharts import (
     QLegend,
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QPainter, QColor
+from logic_gui import FilePathFinder
 
 class LogAnalyzerGUI(QMainWindow):
     def __init__(self):
@@ -75,12 +76,28 @@ class LogAnalyzerGUI(QMainWindow):
         main_layout.addWidget(self.tabs)
 
     def _connect_actions(self):
-        self.browse_btn.clicked.connect(self.dummy_func)   ###
-        self.load_btn.clicked.connect(self.dummy_func)     ###
+        self.browse_btn.clicked.connect(self.handle_browse) 
+        self.load_btn.clicked.connect(self.load_log_file)     
         self.export_btn.clicked.connect(self.dummy_func)   #add btn func
 
     def dummy_func(self):
         print("click")
+
+    def handle_browse(self):
+        file_path = FilePathFinder.get_file_path()
+        if file_path:
+            self.file_path_edit.setText(file_path)
+            self.status_bar.showMessage(f"Selected file: {file_path}", 3000)
+
+    def load_log_file(self):
+
+        file_path = self.file_path_edit.text()
+        
+        if not file_path:
+            self.status_bar.showMessage("Error: No file selected", 3000)
+            return False
+        print(file_path)
+        ## send file_path to log parser
 
     def _init_tabs(self):
         self.tabs = QTabWidget()

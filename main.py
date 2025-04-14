@@ -6,6 +6,5 @@ from logic_gui import LogAnalyzerController
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     view = LogAnalyzerGUI()
-    LogAnalyzerController(view)
     view.show()
     sys.exit(app.exec_())
