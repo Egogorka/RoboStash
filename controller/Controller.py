@@ -18,13 +18,13 @@ class CacheEntry:
 class Controller(IController):
 
 	def __init__(self, db: IDatabase, parser: IParser):
-		self.db = db
-		self.parser = parser
+		self._db = db
+		self._parser = parser
 
 		self.cache = []
 
 	def parse(self, path):
-		data = self.parser.parse(path)
+		data = self._parser.parse(path)
 		self.cache.append(
 			CacheEntry("parse", path, data)
 		)
@@ -35,11 +35,11 @@ class Controller(IController):
 
 	def post(self):
 		for cache_entry in self.cache:
-			self.db.put_into_db(cache_entry.data)
+			self._db.put_into_db(cache_entry.data)
 		self.cache = []  # empty the cache
 
 	def get_all(self):
-		return self.db.get_all_entries()
+		return self._db.get_all_entries()
 
 	def query(self, query):
-		return self.db.query(query)
+		return self._db.query(query)
