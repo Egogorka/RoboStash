@@ -9,5 +9,5 @@ database:
   database: logs
 
 settings:
-  view: cli #cli or gui
+  view: gui #cli or gui
   parser: default

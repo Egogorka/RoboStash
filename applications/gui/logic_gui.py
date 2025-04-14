@@ -16,7 +16,11 @@ class FilePathFinder():
         return file_path if file_path else None
 
 class LogAnalyzerController():
-        
+
+    def __init__(self, gui, controller):
+        self.gui = gui
+        self.controller = controller
+
     def _browse_files(self):
         print("click")
         file_path, _ = QFileDialog.getOpenFileName(

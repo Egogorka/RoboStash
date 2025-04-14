@@ -27,7 +27,7 @@ from PySide6.QtCharts import (
     QLegend,
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QPainter, QColor
-from logic_gui import FilePathFinder
+from applications.gui.logic_gui import FilePathFinder
 
 
 class LogAnalyzerGUI(QMainWindow):
