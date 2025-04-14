@@ -1,13 +1,18 @@
 # This is an example config.
 # !!! DO NOT COMMIT REAL CONFIGS TO PUBLIC REPOSITORIES !!!
-database:
-  type: plug
-  host: localhost
-  port: 5432
-  username: user
-  password: pass
-  database: logs
+databases:
+  plug:
+    type: plug
+  postgreSQL:
+    type: postgreSQL
+    host: localhost
+    port: 5432
+    username: user
+    password: pass
+    database: logs
+
 
 settings:
+  database: plug
   view: gui #cli or gui
   parser: default

@@ -10,7 +10,9 @@ from applications.cli.CLIView import CLIView
 from applications.gui.QTApp import QTApp
 
 from controller.Controller import Controller
+
 from db.DBPlug import DBPlug
+from db.postgresql.Database import Database as PostgreSQL_DB
 
 from parser.ParserPlug import ParserPlug
 from parser.Parser import Parser
@@ -25,6 +27,7 @@ class MainManager():
 		with open('example_config.yaml', 'r') as f:
 			settings = yaml.load(f, Loader=Loader)
 			print(settings)
+			selected_db = settings["settings"]["database"]
 
 			# set parser
 			if settings["settings"]["parser"] == "default":
@@ -39,8 +42,15 @@ class MainManager():
 
 			# set database
 			db = None
-			if settings["database"]["type"] == "plug":
+			if selected_db not in settings["databases"]:
+				print("Name for database not found, plug is used")
+				selected_db = "plug"
+
+			if selected_db == "plug":
 				db = DBPlug()
+			if selected_db == "postgreSQL":
+				db = PostgreSQL_DB()
+
 			db.initialize(settings["database"])
 
 			# create controller
