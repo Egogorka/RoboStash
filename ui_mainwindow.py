@@ -290,7 +290,8 @@ class LogAnalyzerGUI(QMainWindow):
                 "500 Internal Error": 25,
                 "502 Bad Gateway": 7,
                 "503 Service Unavailable": 5,
-                "504 Gateway Timeout": 3
+                "504 Gateway Timeout": 3,
+                "404 Zrada": 3
             }
         }
         ###
@@ -342,8 +343,3 @@ class LogAnalyzerGUI(QMainWindow):
         layout = QVBoxLayout()
         layout.addWidget(splitter)
         self.errors_tab.setLayout(layout)
-        layout.addWidget(QChartView(chart))
-        self.failures_tab.setLayout(layout)
-
-    def _get_month_headers(self):
-        return ["January", "February", "March"]
