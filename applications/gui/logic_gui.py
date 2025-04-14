@@ -1,18 +1,24 @@
 from PySide6.QtWidgets import QFileDialog
 
-class LogAnalyzerController:
+import tkinter as tk
+from tkinter import filedialog
 
-    def __init__(self, gui, controller):
-        self.gui = gui
-        self.controller = controller
-        self._connect_actions()
+class FilePathFinder():
+
+    def get_file_path():
+        root = tk.Tk()
+        root.withdraw()
         
-    def _connect_actions(self):
-        self.gui.browse_btn.clicked.connect(self._browse_files)
-        self.gui.load_btn.clicked.connect(self._load_data)
-        self.gui.export_btn.clicked.connect(self._export_data)
+        file_path = filedialog.askopenfilename(
+            title="Выберите файл",
+            filetypes=(("Все файлы", "*.*"),)
+        )
+        return file_path if file_path else None
 
+class LogAnalyzerController():
+        
     def _browse_files(self):
+        print("click")
         file_path, _ = QFileDialog.getOpenFileName(
             self.gui, 
             "Select Log File", 
@@ -24,8 +30,10 @@ class LogAnalyzerController:
             self.gui.status_bar.showMessage("File selected", 3000)
 
     def _load_data(self):
+        print("click")
         self.gui.status_bar.showMessage("Data loaded successfully", 3000)
 
     def _export_data(self):
+        print("click")
         format = self.gui.format_combo.currentText()
         self.gui.status_bar.showMessage(f"Exporting to {format}...", 3000)
