@@ -9,4 +9,4 @@ database:
   database: logs
 
 settings:
-  view: cli #or gui
+  view: gui #or gui
