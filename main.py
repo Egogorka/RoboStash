@@ -15,27 +15,34 @@ from parser.ParserPlug import ParserPlug
 
 import sys
 
-if __name__ == "__main__":
+class MainManager():
+	controller = None
 	app = None
-	with open('example_config.yaml', 'r') as f:
-		settings = yaml.load(f, Loader=Loader)
-		print(settings)
 
-		# set parser
-		parser = ParserPlug()
+	def __init__(self):
+		with open('example_config.yaml', 'r') as f:
+			settings = yaml.load(f, Loader=Loader)
+			print(settings)
 
-		# set database
-		db = None
-		if settings["database"]["type"] == "plug":
-			db = DBPlug()
-		db.initialize(settings["database"])
+			# set parser
+			parser = ParserPlug()
 
-		# create controller
-		controller = Controller(parser=parser, db=db)
+			# set database
+			db = None
+			if settings["database"]["type"] == "plug":
+				db = DBPlug()
+			db.initialize(settings["database"])
 
-		# set app
-		if settings["settings"]["view"] == "cli":
-			app = CLIApp(controller, CLIView())
-		if settings["settings"]["view"] == "gui":
-			app = QTApp(controller, sys.argv)
-	app.run()
+			# create controller
+			controller = Controller(parser=parser, db=db)
+
+			# set app
+			if settings["settings"]["view"] == "cli":
+				app = CLIApp(controller, CLIView())
+			if settings["settings"]["view"] == "gui":
+				app = QTApp(controller, sys.argv)
+
+
+if __name__ == "__main__":
+	Manager = MainManager()
+	Manager.app.run()
