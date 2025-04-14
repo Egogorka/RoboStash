@@ -10,13 +10,13 @@ class LogAnalyzerController():
         self.gui = gui
         self.controller = controller
 
-    def get_file_path(self):
+    def get_file_path():
         root = tk.Tk()
         root.withdraw()
         
         file_path = filedialog.askopenfilename(
             title="Выберите файл",
-            filetypes=((".log", "*.*"),)
+            filetypes=((".log", ".log"),)
         )
         return file_path if file_path else None
 
