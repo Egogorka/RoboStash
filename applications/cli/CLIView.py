@@ -16,12 +16,20 @@ def quoted_split(s):
 class CLIView(IView):
 
 	def input(self) -> Tuple[str, List[Any]]:
-		raw = input()
+		raw = input("> ")
 		raw_split = quoted_split(raw)
 		return raw_split[0], raw_split[1:]
 
 	def error_msg(self, s: str):
+		print("Error: "+s)
+
+	def msg(self, s: str):
 		print(s)
+
+	def handle_show_cache(self, response: List[IEntry]):
+		print(f"Amount of entries in cache: {len(response)}")
+		for entry in response:
+			print(entry)
 
 	def handle_getall(self, response: List[IEntry]):
 		for entry in response:

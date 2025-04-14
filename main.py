@@ -4,31 +4,32 @@ try:
 except ImportError:
 	from yaml import Loader, Dumper
 
-from views.CLIView import CLIView
+from applications.cli.CLIApp import CLIApp
+from applications.cli.CLIView import CLIView
 
-from application.App import App
+from controller.Controller import Controller
 from db.DBPlug import DBPlug
 from parser.ParserPlug import ParserPlug
 
 if __name__ == "__main__":
-	view = None
-	parser = None
+	app = None
+	parser = ParserPlug()
 	db = None
+	controller = None
 	with open('example_config.yaml', 'r') as f:
 		settings = yaml.load(f, Loader=Loader)
 		print(settings)
 
-		# set view
-		if settings["settings"]["view"] == "cli":
-			view = CLIView()
-
 		# set parser
-		parser = ParserPlug()
 
 		# set database
-		if settings["database"]["type"] == "dbplug":
+		if settings["database"]["type"] == "plug":
 			db = DBPlug()
 		db.initialize(settings["database"])
 
-	app = App(db, parser, view)
+		controller = Controller(parser=parser, db=db)
+
+		# set app
+		if settings["settings"]["view"] == "cli":
+			app = CLIApp(controller, CLIView())
 	app.run()

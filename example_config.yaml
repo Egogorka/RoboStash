@@ -1,7 +1,7 @@
 # This is an example config.
 # !!! DO NOT COMMIT REAL CONFIGS TO PUBLIC REPOSITORIES !!!
 database:
-  type: dbplug
+  type: plug
   host: localhost
   port: 5432
   username: user

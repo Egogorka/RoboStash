@@ -20,6 +20,14 @@ class IView(ABC):
 		pass
 
 	@abstractmethod
+	def msg(self, s: str):
+		pass
+
+	@abstractmethod
+	def handle_show_cache(self, response: List[IEntry]):
+		pass
+
+	@abstractmethod
 	def handle_getall(self, response: List[IEntry]):
 		pass
 
