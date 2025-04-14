@@ -10,14 +10,18 @@ https://github.com/Egogorka/RoboStash
 - psycopg2 — PostgreSQL Python interface
 - pandas — for data storage in-between app components 
 
-## Installation
+## Installation and configuration
 
 Currently the application should be run via Python interpreter with
 necessary packages installed, and necessary databases set up as well.
 
-For quick installation of Python packages use `[name_of_script]`.
+For quick installation of Python packages run `pip install -r requirements.txt`.
 
 For PostgreSQL follow the steps described in https://www.postgresql.org/download/
+
+Then enter in `config.yaml` information about connection to database
+
+
 
 ## How to use
 

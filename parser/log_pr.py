@@ -6,12 +6,9 @@ def open_logfile(path: str) -> str:
     """The function is designed to open a log file at a given path.
     It takes the path to the object as input and returns the contents of this file in string format.
     """
-    try:
-        with open(path, 'r') as logs:
-            text = logs.read()
-            return text
-    except FileNotFoundError as e:
-        print(str(e))
+    with open(path, 'r') as logs:
+        text = logs.read()
+        return text
 
 
 def get_all_logs(file: str) -> list[tuple]:

@@ -24,10 +24,13 @@ class Controller(IController):
 		self.cache = []
 
 	def parse(self, path):
-		data = self._parser.parse(path)
-		self.cache.append(
-			CacheEntry("parse", path, data)
-		)
+		try:
+			data = self._parser.parse(path)
+			self.cache.append(
+				CacheEntry("parse", path, data)
+			)
+		except FileNotFoundError as e:
+			print(str(e))
 
 	def get_cache(self) -> List[IEntry]:
 		temp = [entry.data for entry in self.cache]

@@ -11,7 +11,9 @@ from applications.gui.QTApp import QTApp
 
 from controller.Controller import Controller
 from db.DBPlug import DBPlug
+
 from parser.ParserPlug import ParserPlug
+from parser.Parser import Parser
 
 import sys
 
@@ -25,7 +27,15 @@ class MainManager():
 			print(settings)
 
 			# set parser
-			parser = ParserPlug()
+			if settings["settings"]["parser"] == "default":
+				print("Default parser is used")
+				parser = Parser()
+			else:
+				if settings["settings"]["parser"] != "plug":
+					print("Name for parser not found, plug is used")
+				else:
+					print("Plug is used for parser")
+				parser = ParserPlug()
 
 			# set database
 			db = None
@@ -34,13 +44,13 @@ class MainManager():
 			db.initialize(settings["database"])
 
 			# create controller
-			controller = Controller(parser=parser, db=db)
+			self.controller = Controller(parser=parser, db=db)
 
 			# set app
 			if settings["settings"]["view"] == "cli":
-				app = CLIApp(controller, CLIView())
+				self.app = CLIApp(self.controller, CLIView())
 			if settings["settings"]["view"] == "gui":
-				app = QTApp(controller, sys.argv)
+				self.app = QTApp(self.controller, sys.argv)
 
 
 if __name__ == "__main__":

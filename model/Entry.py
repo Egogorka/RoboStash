@@ -1,6 +1,8 @@
 # from interfaces.IEntry import IEntry
 # problems of defining interface for Entry
 
+from model.UserAgents import UserAgents
+
 class Entry:
 	"""
 		tuple[0] — The IP address of the client that sent the request to the server\n
@@ -34,11 +36,16 @@ class Entry:
 		self.sources = args[11]
 		self.ua_string_raw = args[12]
 		self.response_time = args[13]
-		self.all_of_it = args
+		self.all = args
 		# self.validate()
+		self.ua = None
+
+	def set_ua(self, ua: UserAgents):
+		self.ua = ua
+		return self
 
 	# def validate(self) -> bool:
 	# 	pass
 
 	def __repr__(self):
-		return str(self.all_of_it)
+		return str(self.all)
