@@ -2,13 +2,22 @@
 Robotniks' project for 2025 Hackathon from DD MIPT
 https://github.com/Egogorka/RoboStash
 
+Contributors:
+
+- https://github.com/anastasiiade
+- https://github.com/Andreiv573
+- https://github.com/AserDees
+- https://github.com/KochetovSergey
+- https://github.com/OsokinIlya
+- https://github.com/Egogorka/
+
 ## Packages used
 
 - PyYAML — for parsing configs of databases
 - PySide6 — for GUI in Qt
 - user_agents — for parsing UA strings
 - psycopg2 — PostgreSQL Python interface
-- pandas — for data storage in-between app components 
+- pandas — for data storage in-between app components
 
 ## Installation and configuration
 
@@ -30,20 +39,19 @@ If no config file is provided, then default one is used `example_config.yaml`, w
 
 While database part of config is mandatory and is set up like so:
 ```yaml
-database:
-  type: plug
-  host: localhost
-  port: 5432
-  username: user
-  password: pass
-  database: logs
-```
-selection of view interface can be done via arguments
-```shell
-python main.py 
+databases:
+  plug:
+    type: plug
+  postgreSQL:
+    type: postgreSQL
+    host: localhost
+    port: 5432
+    username: user
+    password: pass
+    database: logs
 ```
 
-- Install packages with script `init.py`
-- Setup supported database (PostgreSQL)
-- Configure database connection parameters (host, password, etc.) in `config.yaml`
-- Start the application from `main.py`
+Then launch the script:
+```shell
+python main.py
+```
