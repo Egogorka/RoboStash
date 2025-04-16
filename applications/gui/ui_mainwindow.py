@@ -27,8 +27,15 @@ from PySide6.QtCharts import (
     QLegend,
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QPainter, QColor
-from applications.gui.logic_gui import FilePathFinder
 
+from logic_gui import LogAnalyzerController
+
+from applications.cli.CLIApp import CLIApp
+from applications.cli.CLIView import CLIView
+from applications.gui.QTApp import QTApp
+from controller.Controller import Controller
+from db.DBPlug import DBPlug
+from parser.ParserPlug import ParserPlug
 
 class LogAnalyzerGUI(QMainWindow):
     def __init__(self):
@@ -85,7 +92,7 @@ class LogAnalyzerGUI(QMainWindow):
         print("click")
 
     def handle_browse(self):
-        file_path = FilePathFinder.get_file_path()
+        file_path = LogAnalyzerController.get_file_path()
         if file_path:
             self.file_path_edit.setText(file_path)
             self.status_bar.showMessage(f"Selected file: {file_path}", 3000)
@@ -97,8 +104,7 @@ class LogAnalyzerGUI(QMainWindow):
         if not file_path:
             self.status_bar.showMessage("Error: No file selected", 3000)
             return False
-        print(file_path)
-        ## send file_path to log parser
+        Controller.parse(Controller, file_path)
 
     def _init_tabs(self):
         self.tabs = QTabWidget()
@@ -123,22 +129,19 @@ class LogAnalyzerGUI(QMainWindow):
         line_chart.setTitle("Requests by Date")
         line_series = QLineSeries()
 
-        #add func get requests
-        dates = ["2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04"]
-        values = [150, 230, 180, 210]
-        ###
-        for i, (date, value) in enumerate(zip(dates, values)):
+        date_value_pairs = LogAnalyzerController.get_date_value_pairs()
+
+        for i, (date, value) in enumerate(date_value_pairs):
             line_series.append(i, value)
-        
+
+            axis_x = QCategoryAxis()
+            axis_x.setTitleText("Date")
+            axis_x.append(date, i) 
+
         line_chart.addSeries(line_series)
-        
-        axis_x = QCategoryAxis()
-        axis_x.setTitleText("Date")
-        for i, date in enumerate(dates):
-            axis_x.append(date, i)
         line_chart.addAxis(axis_x, Qt.AlignBottom)
         line_series.attachAxis(axis_x)
-        
+
         axis_y = QValueAxis()
         axis_y.setTitleText("Number of Requests")
         line_chart.addAxis(axis_y, Qt.AlignLeft)
@@ -150,18 +153,9 @@ class LogAnalyzerGUI(QMainWindow):
         bar_chart = QChart()
         bar_chart.setTitle("Top IPs by Requests")
         bar_series = QBarSeries()
-        #add func get top ip
-        ip_data = {
-            "192.168.1.1": 45,
-            "192.168.1.2": 32,
-            "192.168.1.3": 28,
-            "192.168.1.4": 22,
-            "192.168.1.5": 20,
-            "192.168.1.6": 15,
-            "192.168.1.7": 8,
-            "192.168.1.8": 3,
-        }
-        ###
+
+        ip_data = LogAnalyzerController.get_ip_data()
+        
         bar_set = QBarSet("Requests")
         for count in ip_data.values():
             bar_set.append(count)
@@ -206,26 +200,8 @@ class LogAnalyzerGUI(QMainWindow):
         ]
         model.setHorizontalHeaderLabels(headers)
         
-        #Add func load data request
-        sample_data = [
-            {
-                "ip": "192.168.1.1",
-                "protocol": "HTTP/1.1",
-                "device": "Desktop",
-                "browser": "Chrome",
-                "version": "116.0.5845.141",
-                "total": 148
-            },
-            {
-                "ip": "192.168.1.2",
-                "protocol": "HTTP/2",
-                "device": "Mobile",
-                "browser": "Safari",
-                "version": "16.6",
-                "total": 92
-            }
-        ]
-        ##
+        sample_data = LogAnalyzerController.get_request_data()
+
         for data in sample_data:
             row = [
                 QStandardItem(data["ip"]),
@@ -260,15 +236,8 @@ class LogAnalyzerGUI(QMainWindow):
         line_chart = QChart()
         line_chart.setTitle("Error Trends")
         line_series = QLineSeries()
-        #add get error data
-        error_data = [
-            ("2023-01-01", 12),
-            ("2023-01-02", 25),
-            ("2023-01-03", 18),
-            ("2023-01-04", 15),
-            ("2023-01-05", 22)
-        ]
-        ###
+
+        error_data = LogAnalyzerController.get_error_data()
         for i, (date, count) in enumerate(error_data):
             line_series.append(i, count)
             line_series.setName(f"{date}: {count} errors")
@@ -296,23 +265,9 @@ class LogAnalyzerGUI(QMainWindow):
         pie_chart.legend().setVisible(True)
         pie_chart.legend().setAlignment(Qt.AlignRight)
         pie_chart.legend().setMarkerShape(QLegend.MarkerShapeCircle)
-        #add get error data
-        error_types = {
-            "Client Errors": {
-                "400 Bad Request": 15,
-                "401 Unauthorized": 8,
-                "403 Forbidden": 10,
-                "404 Not Found": 65
-            },
-            "Server Errors": {
-                "500 Internal Error": 25,
-                "502 Bad Gateway": 7,
-                "503 Service Unavailable": 5,
-                "504 Gateway Timeout": 3,
-                "404 Zrada": 3
-            }
-        }
-        ###
+
+        error_types = LogAnalyzerController.get_error_types()
+
         colors = [
             "#e74c3c", "#c0392b", "#e67e22", "#d35400", 
             "#3498db", "#2980b9", "#1abc9c", "#16a085"  
