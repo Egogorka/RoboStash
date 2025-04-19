@@ -4,8 +4,6 @@ from parser.Parser import Parser
 import psycopg2
 import glob 
 import pandas as pd
-import logging
-
 
 class Database(IDatabase):
     def __init__(self, connection_params):
@@ -23,11 +21,11 @@ class Database(IDatabase):
 
     def create_tables(self, sql_files_directory='./sql_scripts/table'):
         self.execute_sql_files_directory(sql_files_directory)
-        logging.info("Таблицы созданы")
+        print("Таблицы созданы")
     
     def create_views(self, sql_files_directory='./sql_scripts/views'):
         self.execute_sql_files_directory(sql_files_directory)
-        logging.info("Представления созданы")
+        print("Представления созданы")
 
     def load_log(self, log_path: str):
         if not hasattr(self, 'loader'):
@@ -49,7 +47,7 @@ class Database(IDatabase):
         try:
             view_files = glob.glob(f"{sql_files_directory}/*.sql")
             if not view_files:
-                logging.info(f"No SQL files found in directory: {sql_files_directory}")
+                print(f"No SQL files found in directory: {sql_files_directory}")
                 return
 
             for file_path in view_files:
@@ -58,9 +56,9 @@ class Database(IDatabase):
                         sql_script = file.read()
                         self.cursor.execute(sql_script)
                         self.conn.commit()
-                        logging.info(f"Executed: {file_path}")
+                        print(f"Executed: {file_path}")
                 except Exception as e:
-                    logging.error(f"Error in {file_path}: {e}")
+                    print(f"Error in {file_path}: {e}")
                     self.conn.rollback()
         finally:
             self._close()
