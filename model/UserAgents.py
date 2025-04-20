@@ -13,7 +13,7 @@ class UserAgents:
         self.device_type = args[0]
         self.device_brand = args[1]
         self.device_model = args[2]
-        self.os = args[3]
+        self.os_family = args[3]
         self.os_version = args[4]
         self.browser_family = args[5]
         self.browser_version = args[6]
@@ -21,14 +21,3 @@ class UserAgents:
 
     def __repr__(self):
         return str(self.all)
-
-    def to_dict(self):
-        return {
-            "device_type"       : self.device_type,
-            "device_brand"      : self.device_brand,
-            "device_model"      : self.device_model,
-            "os_family"                : self.os,
-            "os_version"        : self.os_version,
-            "browser_family"      : self.browser_family,
-            "browser_version"   : self.browser_version,
-        }

@@ -1,3 +1,7 @@
 /logs/
 !/logs/.gitkeep
+/Logging/Logging_error/
+!/Logging/Logging_error/.gitkeep
+/Logging/Logging_info/
+!/Logging/Logging_info/.gitkeep
 config.yaml
