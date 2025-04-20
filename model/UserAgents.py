@@ -21,3 +21,14 @@ class UserAgents:
 
     def __repr__(self):
         return str(self.all)
+
+    def to_dict(self):
+        return {
+            "device_type"       : self.device_type,
+            "device_brand"      : self.device_brand,
+            "device_model"      : self.device_model,
+            "os"                : self.os,
+            "os_version"        : self.os_version,
+            "browser_type"      : self.browser_type,
+            "browser_version"   : self.browser_version,
+        }

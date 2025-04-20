@@ -49,3 +49,21 @@ class Entry:
 
 	def __repr__(self):
 		return str(self.all)
+
+	def to_dict(self):
+		return {
+			"ip"			: self.ip,
+			"remote_name"	: self.remote_name,
+			"user_id"		: self.user_id,
+			"date"			: self.date,
+			"request_time"	: self.request_time,
+			"time_zone"		: self.time_zone,
+			"request_type"	: self.request_type,
+			"api" 			: self.api,
+			"protocol"		: self.protocol,
+			"status_code"	: self.status_code,
+			"bytes_amount"	: self.bytes_amount,
+			"sources"		: self.sources,
+			"ua_string_raw"	: self.ua_string_raw,
+			"response_time"	: self.response_time,
+		}
