@@ -1,0 +1,4 @@
+2025-04-20 14:00:49,619 ERROR Database: Ошибка в ./sql_scripts/table\table_create.sql: ОШИБКА:  отношение "dim_ip" уже существует
+
+2025-04-20 14:00:49,622 ERROR Database: Ошибка в ./sql_scripts/table\table_idx.sql: ОШИБКА:  отношение "idx_fact_logs_date" уже существует
+

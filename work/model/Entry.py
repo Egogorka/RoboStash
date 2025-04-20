@@ -2,6 +2,7 @@ from interfaces.IEntry import IEntry
 from datetime import datetime
 from model.UserAgents import UserAgents
 from typing import Optional
+import logging 
 
 class Entry(IEntry):
     def __init__(self, log, parsed_ua):
@@ -38,7 +39,7 @@ class Entry(IEntry):
     @ip.setter
     def ip(self, value: str) -> None:
         if not isinstance(value, str):
-            raise ValueError("IP должен быть строкой")
+            raise logging.error("Entry: IP должен быть строкой")
         self._ip = value
 
     @property
@@ -48,7 +49,7 @@ class Entry(IEntry):
     @remote_user.setter
     def remote_user(self, value: Optional[str]) -> None:
         if value is not None and not isinstance(value, str):
-            raise ValueError("remote_user должен быть строкой или None")
+            raise ValueError("Entry: remote_user должен быть строкой или None")
         self._remote_user = value
 
     @property
@@ -58,7 +59,7 @@ class Entry(IEntry):
     @user_id.setter
     def user_id(self, value: Optional[str]) -> None:
         if value is not None and not isinstance(value, str):
-            raise ValueError("user_id должен быть строкой или None")
+            raise ValueError("Entry: user_id должен быть строкой или None")
         self._user_id = value
 
     @property
@@ -68,7 +69,7 @@ class Entry(IEntry):
     @datetime.setter
     def datetime(self, value: datetime) -> None:
         if not isinstance(value, datetime):
-            raise ValueError("datetime должен быть объектом datetime")
+            raise ValueError("Entry: datetime должен быть объектом datetime")
         self._datetime = value
 
     @property
@@ -78,7 +79,7 @@ class Entry(IEntry):
     @request_type.setter
     def request_type(self, value: str) -> None:
         if not isinstance(value, str):
-            raise ValueError("request_type должен быть строкой")
+            raise ValueError("Entry: request_type должен быть строкой")
         self._request_type = value
 
     @property
@@ -88,7 +89,7 @@ class Entry(IEntry):
     @api.setter
     def api(self, value: str) -> None:
         if not isinstance(value, str):
-            raise ValueError("api должен быть строкой")
+            raise ValueError("Entry: api должен быть строкой")
         self._api = value
 
     @property
@@ -98,7 +99,7 @@ class Entry(IEntry):
     @protocol.setter
     def protocol(self, value: str) -> None:
         if not isinstance(value, str):
-            raise ValueError("protocol должен быть строкой")
+            raise ValueError("Entry: protocol должен быть строкой")
         self._protocol = value
 
     @property
@@ -108,7 +109,7 @@ class Entry(IEntry):
     @status_code.setter
     def status_code(self, value: int) -> None:
         if not isinstance(value, int):
-            raise ValueError("status_code должен быть целым числом")
+            raise ValueError("Entry: status_code должен быть целым числом")
         self._status_code = value
 
     @property
@@ -118,7 +119,7 @@ class Entry(IEntry):
     @response_size.setter
     def response_size(self, value: int) -> None:
         if not isinstance(value, int):
-            raise ValueError("response_size должен быть целым числом")
+            raise ValueError("Entry: response_size должен быть целым числом")
         self._response_size = value
 
     @property
@@ -128,7 +129,7 @@ class Entry(IEntry):
     @response_time.setter
     def response_time(self, value: Optional[int]) -> None:
         if value is not None and not isinstance(value, int):
-            raise ValueError("response_time должен быть целым числом или None")
+            raise ValueError("Entry: response_time должен быть целым числом или None")
         self._response_time = value
 
     @property
@@ -138,7 +139,7 @@ class Entry(IEntry):
     @referer.setter
     def referer(self, value: Optional[str]) -> None:
         if value is not None and not isinstance(value, str):
-            raise ValueError("referer должен быть строкой или None")
+            raise ValueError("Entry: referer должен быть строкой или None")
         self._referer = value
 
     @property
@@ -148,7 +149,7 @@ class Entry(IEntry):
     @ua.setter
     def ua(self, value: str) -> None:
         if not isinstance(value, str):
-            raise ValueError("ua должен быть строкой")
+            raise ValueError("Entry: ua должен быть строкой")
         self._ua = value
 
     @property
@@ -159,7 +160,7 @@ class Entry(IEntry):
     def parsed_ua(self, value):
         # Убедитесь, что передаваемый объект parsed_ua является экземпляром UserAgents или правильно обработан
         if not isinstance(value, UserAgents):
-            raise ValueError("parsed_ua должен быть экземпляром UserAgents")
+            raise ValueError("Entry: parsed_ua должен быть экземпляром UserAgents")
         self._parsed_ua = value
 
     def __repr__(self):

@@ -1,0 +1,32 @@
+2025-04-20 14:00:49,619 ERROR Database: Ошибка в ./sql_scripts/table\table_create.sql: ОШИБКА:  отношение "dim_ip" уже существует
+
+2025-04-20 14:00:49,622 ERROR Database: Ошибка в ./sql_scripts/table\table_idx.sql: ОШИБКА:  отношение "idx_fact_logs_date" уже существует
+
+2025-04-20 14:00:49,622 INFO ['logfile1.log', 'logfile10.log', 'logfile2.log', 'logfile3.log', 'logfile4.log', 'logfile5.log', 'logfile6.log', 'logfile7.log', 'logfile8.log', 'logfile9.log', 'logfiles1.log', 'logfiles10.log', 'logfiles2.log', 'logfiles3.log', 'logfiles4.log', 'logfiles5.log', 'logfiles6.log', 'logfiles7.log', 'logfiles8.log', 'logfiles9.log']
+2025-04-20 14:00:49,622 INFO [*] Найдено 20 лог-файлов. Загружаем
+2025-04-20 14:00:49,623 INFO [\u2192] Загрузка: ./logs\logfile1.log
+2025-04-20 14:00:49,660 INFO PostgresLoader: _init_dicts: справочник dim_ip загружен. 0 записей.
+2025-04-20 14:00:49,662 INFO PostgresLoader: _init_dicts: справочник dim_api загружен. 0 записей.
+2025-04-20 14:00:49,664 INFO PostgresLoader: _init_dicts: справочник dim_protocol загружен. 0 записей.
+2025-04-20 14:00:49,665 INFO PostgresLoader: _init_dicts: справочник dim_referer загружен. 0 записей.
+2025-04-20 14:00:49,667 INFO PostgresLoader: _init_dicts: справочник dim_user_agent загружен. 0 записей.
+2025-04-20 14:00:49,671 INFO PostgresLoader: __init__: инициализирован.
+2025-04-20 14:00:49,671 INFO Parser: parse: Начинаем парсинг файла ./logs\logfile1.log
+2025-04-20 14:00:50,328 INFO Parser: _parse_logs: Открытие файла логов заняло 0.656 сек.
+2025-04-20 14:00:52,917 INFO Parser: _parse_logs: Извлечение логов заняло 2.589 сек.
+2025-04-20 14:00:52,980 INFO Parser: _parse_logs: Извлечение user-agent'ов заняло 0.063 сек.
+2025-04-20 14:00:58,098 INFO Parser: _parse_logs: Парсинг user-agent'ов занял 5.118 сек.
+2025-04-20 14:00:58,099 INFO Parser: _parse_logs: Завершено. Всего логов: 1000000. Общее время: 8.427 сек.
+2025-04-20 14:01:10,373 INFO Parser: parse: Парсинг './logs\logfile1.log' завершён за 20.702 сек. Записей: 1000000
+2025-04-20 14:01:23,556 INFO PostgresLoader: update_dicts_batch: dim_ip: занял 12.609 сек.
+2025-04-20 14:01:23,597 INFO PostgresLoader: update_dicts_batch: dim_api: занял 0.002 сек.
+2025-04-20 14:01:23,599 INFO PostgresLoader: update_dicts_batch: dim_protocol: занял 0.002 сек.
+2025-04-20 14:01:23,600 INFO PostgresLoader: update_dicts_batch: dim_referer: занял 0.001 сек.
+2025-04-20 14:01:23,728 INFO PostgresLoader: update_user_agents_batch: занял 0.127 сек.
+2025-04-20 14:01:24,671 INFO PostgresLoader: load_log_batch: занял 14.166 сек.
+2025-04-20 14:01:28,186 INFO PostgresLoader: log_to_fact_csv: занял 3.498 сек.
+2025-04-20 14:02:13,543 INFO PostgresLoader: load_fact_log: занял 45.357 сек.
+2025-04-20 14:02:13,543 INFO PostgresLoader: load_log: 1000000/1000000 записей. Время: 63.05 сек. Скорость: 15861.23 записей/сек.
+2025-04-20 14:02:13,543 INFO PostgresLoader: load_log: завершено за 63.05 сек. Общая скорость: 15861.22 записей/сек.
+2025-04-20 14:02:14,027 INFO Database: load_log: Загрузка лога завершена за 84.36 секунд
+2025-04-20 14:02:14,027 INFO [\u2713] Файл 'logfile1.log' загружен за 84.40 сек.

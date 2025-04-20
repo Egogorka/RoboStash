@@ -1,34 +1,28 @@
 import io
+import logging
 import psycopg2
 from collections import defaultdict
 from model.Entry import Entry
 import time
 import csv
-import logging
 
 
 class PostgresLoader:
     def __init__(self, connection_params: dict):
         self.connect = psycopg2.connect(**connection_params)
-        self.dicts = defaultdict(dict)  # Кэш-словари справочников
-        self.request_type_dict = {}  # Типы запросов
-        self.device_type_dict = {}  # Типы устройств
+        self.dicts = defaultdict(dict)
+        self.request_type_dict = {}
+        self.device_type_dict = {}
         self._init_dicts()
+        logging.info("PostgresLoader: __init__: инициализирован.")
 
     def _init_dicts(self):
         self.request_type_dict = {
-            'GET': 1,
-            'POST': 2,
-            'PUT': 3,
-            'DELETE': 4
+            'GET': 1, 'POST': 2, 'PUT': 3, 'DELETE': 4
         }
 
         self.device_type_dict = {
-            'PC': 1,
-            'mobile': 2,
-            'tablet': 3,
-            'bot': 4,
-            'other': 5
+            'PC': 1, 'mobile': 2, 'tablet': 3, 'bot': 4, 'other': 5
         }
 
         with self.connect as conn:
@@ -42,6 +36,7 @@ class PostgresLoader:
             ]:
                 cur.execute(f"SELECT id, {key} FROM {table}")
                 self.dicts[table] = {v: k for k, v in cur.fetchall()}
+                logging.info(f"PostgresLoader: _init_dicts: справочник {table} загружен. {len(self.dicts[table])} записей.")
 
             cur.execute("SELECT id, name FROM dim_request_type")
             for row in cur.fetchall():
@@ -52,6 +47,7 @@ class PostgresLoader:
                 self.device_type_dict[row[1]] = row[0]
 
     def update_dicts_batch(self, table: str, key_column: str, values: set) -> None:
+        start = time.time()
         values = {v for v in values if v is not None}
         existing_values = self.dicts.get(table, {})
         new_values = [v for v in values if v not in existing_values]
@@ -72,8 +68,10 @@ class PostgresLoader:
 
             cur.execute(f"SELECT id, {key_column} FROM {table} WHERE {key_column} = ANY(%s)", (new_values,))
             self.dicts[table].update({v: k for k, v in cur.fetchall()})
+        logging.info(f"PostgresLoader: update_dicts_batch: {table}: занял {time.time() - start:.3f} сек.")
 
     def update_user_agents_batch(self, entries: list[Entry]) -> None:
+        start = time.time()
         new_user_agents = {}
         for entry in entries:
             ua = entry.ua
@@ -81,13 +79,9 @@ class PostgresLoader:
                 parsed = entry.parsed_ua
                 device_type_id = self.device_type_dict.get(parsed.device_type, None)
                 new_user_agents[ua] = [
-                    ua,
-                    parsed.device_brand,
-                    parsed.device_model,
-                    parsed.os_family,
-                    parsed.os_version,
-                    parsed.browser_family,
-                    parsed.browser_version,
+                    ua, parsed.device_brand, parsed.device_model,
+                    parsed.os_family, parsed.os_version,
+                    parsed.browser_family, parsed.browser_version,
                     device_type_id
                 ]
 
@@ -110,7 +104,10 @@ class PostgresLoader:
                 cur.execute("SELECT id, ua FROM dim_user_agent WHERE ua = ANY(%s)", (list(new_user_agents.keys()),))
                 self.dicts['dim_user_agent'].update({ua: _id for _id, ua in cur.fetchall()})
 
+        logging.info(f"PostgresLoader: update_user_agents_batch: занял {time.time() - start:.3f} сек.")
+
     def load_log_batch(self, entries: list[Entry], batch_size: int = 10000):
+        start = time.time()
         ip_addresses = {e.ip for e in entries if e.ip}
         apis = {e.api for e in entries if e.api}
         protocols = {e.protocol for e in entries if e.protocol}
@@ -130,7 +127,10 @@ class PostgresLoader:
             e.user_agent_id = self.dicts['dim_user_agent'].get(e.ua)
             e.request_type_id = self.request_type_dict.get(e.request_type)
 
+        logging.info(f"PostgresLoader: load_log_batch: занял {time.time() - start:.3f} сек.")
+
     def log_to_fact_csv(self, entries: list[Entry]) -> io.StringIO:
+        start = time.time()
         buffer = io.StringIO()
         writer = csv.writer(buffer)
         for e in entries:
@@ -141,9 +141,11 @@ class PostgresLoader:
                 e.status_code >= 400, e.remote_user, e.user_id
             ])
         buffer.seek(0)
+        logging.info(f"PostgresLoader: log_to_fact_csv: занял {time.time() - start:.3f} сек.")
         return buffer
 
     def load_fact_log(self, buffer: io.StringIO):
+        start = time.time()
         with self.connect as conn:
             cur = conn.cursor()
             cur.copy_expert("""
@@ -155,8 +157,9 @@ class PostgresLoader:
                 ) FROM STDIN WITH CSV
             """, buffer)
             conn.commit()
+        logging.info(f"PostgresLoader: load_fact_log: занял {time.time() - start:.3f} сек.")
 
-    def load_log(self, entries: list[Entry], batch_size: int = 100000):
+    def load_log(self, entries: list[Entry], batch_size: int = 1000000):
         start_total = time.time()
         total_entries = len(entries)
         processed_entries = 0
@@ -171,7 +174,13 @@ class PostgresLoader:
             elapsed_time = time.time() - start_total
             speed = processed_entries / elapsed_time
 
-            logging.info(f"[✓] Загрузка: {processed_entries}/{total_entries} записей. "
-                  f"Время: {elapsed_time:.2f} сек. Скорость: {speed:.2f} записей/сек.")
+            logging.info(
+                f"PostgresLoader: load_log: {processed_entries}/{total_entries} записей. "
+                f"Время: {elapsed_time:.2f} сек. Скорость: {speed:.2f} записей/сек."
+            )
 
-        logging.info(f"[✓] Загрузка завершена за {elapsed_time:.2f} сек. Общая скорость: {speed:.2f} записей/сек.")
+        total_time = time.time() - start_total
+        logging.info(
+            f"PostgresLoader: load_log: завершено за {total_time:.2f} сек. "
+            f"Общая скорость: {processed_entries / total_time:.2f} записей/сек."
+        )
