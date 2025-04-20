@@ -27,7 +27,6 @@ class LogAnalyzerController():
         ("2025-01-03", 180),
         ("2025-01-04", 210)
         ]
-
         return date_value_pairs
     
     def get_ip_data():
@@ -64,6 +63,9 @@ class LogAnalyzerController():
         ]
         return sample_data
     
+    def db_load_result(self, result_string):
+        self.gui.status_bar.showMessage(result_string, 3000)
+
     def get_error_data():
         error_data = [
             ("2023-01-01", 12),

@@ -62,6 +62,12 @@ class LogAnalyzerGUI(QMainWindow):
         load_layout.addWidget(self.load_btn)
         load_group.setLayout(load_layout)
 
+        status_group = QGroupBox("Data Export")
+        self.status_bar = QStatusBar()
+        status_layout = QHBoxLayout()
+        status_layout.addWidget(self.status_bar)
+        status_group.setLayout(status_layout)
+
         export_group = QGroupBox("Data Export")
         self.format_combo = QComboBox()
         self.format_combo.addItems(["CSV", "Parquet"])
@@ -76,10 +82,9 @@ class LogAnalyzerGUI(QMainWindow):
         self.tabs = QTabWidget()
         self._init_tabs()
         self._connect_actions()
-        self.status_bar = QStatusBar()
-        self.setStatusBar(self.status_bar)
 
         main_layout.addWidget(load_group)
+        main_layout.addWidget(status_group)
         main_layout.addWidget(export_group)
         main_layout.addWidget(self.tabs)
 
@@ -89,6 +94,7 @@ class LogAnalyzerGUI(QMainWindow):
         self.export_btn.clicked.connect(self.dummy_func)   #add btn func
 
     def dummy_func(self):
+        LogAnalyzerController.db_load_result(LogAnalyzerController, "hehehe")
         print("click")
 
     def handle_browse(self):
