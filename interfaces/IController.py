@@ -3,6 +3,7 @@ from typing import List
 
 from model.Entry import Entry as IEntry
 
+import pandas as pd
 
 class IController(ABC):
     """
@@ -33,23 +34,28 @@ class IController(ABC):
     @abstractmethod
     def post(self) -> None:
         """
-        Posts all of the saved logs in the cache and empties it
+        Posts all of the saved logs in the db and empties it
         """
         pass
 
     @abstractmethod
-    def get_all(self) -> List[IEntry]:
+    def get_view_data(self, view_name: str) -> pd.DataFrame:
+        """
+        Абстрактный метод для получения данных из указанного представления.
+
+        :param view_name: Название представления в базе данных.
+        :return: DataFrame с данными из представления.
+        """
+        pass
+
+    @abstractmethod
+    def get_views(self) -> List[str]:
+        pass
+
+    @abstractmethod
+    def get_requests_by_ip_and_date(self) -> pd.DataFrame:
         """
         Gets all of the entries from database
         :return: list of entries
-        """
-        pass
-
-    @abstractmethod
-    def query(self, query):
-        """
-        Execute query to DB
-        :param query:
-        :return: is dependent of the query.
         """
         pass

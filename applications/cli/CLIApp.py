@@ -2,7 +2,7 @@ from typing import List, Tuple, Any
 
 from interfaces.IApp import IApp, IController
 from interfaces.IView import IView
-
+from model.Entry import Entry as IEntry
 
 # A bit lying with name there, supposed to be ViewApp
 class CLIApp(IApp):
@@ -16,8 +16,19 @@ class CLIApp(IApp):
             "parse": (lambda *args: self.controller.parse(*args)),
             "get_cache": (lambda *args: self.view.handle_show_cache(self.controller.get_cache())),
             "post": (lambda *args: self.controller.post()),
-            "get_all": (lambda *args: self.view.handle_getall(self.controller.get_all())),
-            "query": (lambda query: self.view.handle_query(query, self.controller.query(query))),
+            "get_views": (lambda *args: self.handle_get_views()),
+            "get_view_data": (lambda *args:
+                self.view.handle_getall(  # one needs to put dict there
+                    [IEntry(*e) for e in
+                     self.controller.get_view_data(args[0]).itertuples(index=False, name=None)]
+                )
+            ),
+            "get_requests_by_ip_and_date": (lambda *args:
+                self.view.handle_getall(  # one needs to put dict there
+                    [IEntry(*e) for e in
+                    self.controller.get_requests_by_ip_and_date().itertuples(index=False, name=None)]
+                )
+            ),
             "stop": (lambda *args: self.stop()),
             "help": (lambda *args: self.help(*args))
         }
@@ -25,8 +36,9 @@ class CLIApp(IApp):
             "parse": "parse",
             "get_cache": "get_cache",
             "post": "post",
-            "get_all": "get_all",
-            "query": "Executes the ",
+            "get_views": "get_views",
+            "get_view_data": "get_view_data",
+            "get_requests_by_ip_and_date": "get_requests",
             "stop": "Stops the program. No arguments",
             "help": "Helps you by describing commands. " +
                     "If no argument - lists all available commands, " +
@@ -41,9 +53,13 @@ class CLIApp(IApp):
 
     def do_command(self, command, args):
         if command in self.commands_dict:
-            self.commands_dict[command](*args)
+            (self.commands_dict[command])(*args)
         else:
             self.view.error_msg(f"No known command {command}")
+
+    def handle_get_views(self):
+        for view in self.controller.get_views():
+            self.view.msg(view)
 
     def stop(self):
         self.running = False

@@ -1,7 +1,9 @@
-from interfaces.ISimpleDB import IDatabase
+from interfaces.IDatabase import IDatabase
 from interfaces.IParser import IParser
 from interfaces.IController import IController
 from model.Entry import Entry as IEntry
+
+import pandas as pd
 
 from typing import List
 
@@ -38,11 +40,14 @@ class Controller(IController):
 
 	def post(self):
 		for cache_entry in self.cache:
-			self._db.put_into_db(cache_entry.data)
+			self._db.load_log(cache_entry.data)
 		self.cache = []  # empty the cache
 
-	def get_all(self):
-		return self._db.get_all_entries()
+	def get_views(self) -> List[str]:
+		return self._db.get_views()
 
-	def query(self, query):
-		return self._db.query(query)
+	def get_view_data(self, view_name: str) -> pd.DataFrame:
+		return self._db.get_view_data(view_name)
+
+	def get_requests_by_ip_and_date(self):
+		return self._db.get_requests_by_ip_and_date()

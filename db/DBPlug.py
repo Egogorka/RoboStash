@@ -1,32 +1,41 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from interfaces.ISimpleDB import IDatabase
+from interfaces.IDatabase import IDatabase
 
 from model.Entry import Entry as IEntry
 # needs to be replaced with this!! somehow
 # from interfaces.IEntry import IEntry
 
+import pandas as pd
 
 class DBPlug(IDatabase):
 
-	def __init__(self):
+	def __init__(self, config):
+		print("Initializing db from config:")
+		print(config)
 		self.data = []  # best database
 
-	def initialize(self, config):
-		print("Initializing db from config, blahblah")
+	def _connect(self):
+		print("Connect to database")
 
-	def init_tables(self):
-		print("Init tables wohoo")
+	def _close(self):
+		print("Close database connection")
 
-	def put_into_db(self, entries: List[IEntry]):
-		print(f"Extending by {entries}")
+	def create_tables(self, sql_files_directory=None):
+		print(f"PLUG: Create tables with {sql_files_directory}")
+
+	def create_views(self, sql_files_directory=None):
+		print(f"PLUG: Create views with {sql_files_directory}")
+
+	def load_log(self, entries: List[IEntry]):
 		self.data.extend(entries)
 
-	def get_all_entries(self) -> List[IEntry]:
-		print(f"Return {self.data}")
-		return self.data
+	def get_view_data(self, view_name: str) -> pd.DataFrame:
+		return pd.DataFrame()
 
-	def query(self, query_text):
-		print("Ye, right, no query for you from dbplug")
-		return "Eat pipes"
+	def get_views(self) -> List[str]:
+		return []  # no views
+
+	def get_requests_by_ip_and_date(self) -> pd.DataFrame:
+		return pd.DataFrame.from_records([e.to_dict() for e in self.data])
