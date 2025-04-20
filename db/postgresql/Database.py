@@ -10,16 +10,17 @@ from typing import List
 
 class Database(IDatabase):
 
-    def __init__(self, connection_params):
-        self.connection_params = connection_params
+    def __init__(self, settings):
+        self.settings = settings
         self.loader = PostgresLoader(self._connect_function)
 
     def _connect_function(self):
-        dbname = self.connection_params["dbname"]
-        user = self.connection_params["user"]
-        password = self.connection_params["password"]
-        port = self.connection_params["port"]
-        host = self.connection_params["host"]
+        dbname = self.settings["dbname"]
+        user = self.settings["user"]
+        password = self.settings["password"]
+        port = self.settings["port"]
+        host = self.settings["host"]
+        print(self.settings)
         return psycopg2.connect(
             dbname=dbname,
             user=user,
@@ -38,16 +39,24 @@ class Database(IDatabase):
         if hasattr(self, 'conn') and self.conn:
             self.conn.close()
 
-    def create_tables(self, sql_files_directory='./sql_scripts/table'):
+    def create_tables(self, sql_files_directory=None):
+        if sql_files_directory is None:
+            sql_files_directory = self.settings["scripts"]["table"]
         self.execute_sql_files_directory(sql_files_directory)
 
-    def create_views(self, sql_files_directory='./sql_scripts/views'):
+    def create_views(self, sql_files_directory=None):
+        if sql_files_directory is None:
+            sql_files_directory = self.settings["scripts"]["views"]
         self.execute_sql_files_directory(sql_files_directory)
 
     def load_log(self, entries: List[IEntry]):
         logs = [entry.all for entry in entries]
         parsed_ua = [entry.ua.all for entry in entries]
         self.loader.load_log(logs, parsed_ua)
+
+    def get_views(self) -> List[str]:
+        print("NOT IMPLEMENTED!")
+        return []
 
     def get_view_data(self, view_name: str) -> pd.DataFrame:
         with self._connect_function() as conn:

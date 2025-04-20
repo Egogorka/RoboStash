@@ -14,7 +14,7 @@ databases:
       insert: ""
       staging_logs: ""
       table: "./sql_scripts/table"
-      views: ""
+      views: "./sql_scripts/views"
 
 settings:
   database: plug
