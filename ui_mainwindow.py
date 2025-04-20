@@ -135,7 +135,7 @@ class LogAnalyzerGUI(QMainWindow):
         line_chart.setTitle("Requests by Date")
         line_series = QLineSeries()
 
-        date_value_pairs = LogAnalyzerController.get_date_value_pairs()
+        date_value_pairs = LogAnalyzerController.get_date_value_pairs(LogAnalyzerController)
 
         for i, (date, value) in enumerate(date_value_pairs):
             line_series.append(i, value)
@@ -160,7 +160,7 @@ class LogAnalyzerGUI(QMainWindow):
         bar_chart.setTitle("Top IPs by Requests")
         bar_series = QBarSeries()
 
-        ip_data = LogAnalyzerController.get_ip_data()
+        ip_data = LogAnalyzerController.get_ip_data(LogAnalyzerController)
         
         bar_set = QBarSet("Requests")
         for count in ip_data.values():
@@ -206,7 +206,7 @@ class LogAnalyzerGUI(QMainWindow):
         ]
         model.setHorizontalHeaderLabels(headers)
         
-        sample_data = LogAnalyzerController.get_request_data()
+        sample_data = LogAnalyzerController.get_request_data(LogAnalyzerController)
 
         for data in sample_data:
             row = [
@@ -251,7 +251,7 @@ class LogAnalyzerGUI(QMainWindow):
         line_chart.setTitle("Error Trends")
         line_series = QLineSeries()
 
-        error_data = LogAnalyzerController.get_error_data()
+        error_data = LogAnalyzerController.get_error_data(LogAnalyzerController)
         for i, (date, count) in enumerate(error_data):
             line_series.append(i, count)
             line_series.setName(f"{date}: {count} errors")
@@ -280,7 +280,7 @@ class LogAnalyzerGUI(QMainWindow):
         pie_chart.legend().setAlignment(Qt.AlignRight)
         pie_chart.legend().setMarkerShape(QLegend.MarkerShapeCircle)
 
-        error_types = LogAnalyzerController.get_error_types()
+        error_types = LogAnalyzerController.get_error_types(LogAnalyzerController)
 
         colors = [
             "#e74c3c", "#c0392b", "#e67e22", "#d35400", 
