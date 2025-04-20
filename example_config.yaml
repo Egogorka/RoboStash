@@ -9,11 +9,11 @@ databases:
     port: 5432
     user: user
     password: pass
-    dbname: logs
+    dbname: bd_logs
     scripts:
       insert: ""
       staging_logs: ""
-      table: ""
+      table: "./sql_scripts/table"
       views: ""
 
 settings:

@@ -18,13 +18,28 @@ from parser.ParserPlug import ParserPlug
 from parser.Parser import Parser
 
 import sys
+from os.path import isfile, join, dirname, splitext
+from os import listdir
 
 class MainManager():
 	controller = None
 	app = None
 
-	def __init__(self):
-		with open('example_config.yaml', 'r') as f:
+	def __init__(self, python_args: list[str]):
+		cur_dir = dirname(python_args[0])
+		config_files = [f for f in listdir(cur_dir)
+			if isfile(join(cur_dir, f)) and splitext(f)[1] == ".yaml"
+		]
+		config_path = "example_config.yaml"
+		if "config.yaml" in config_files:
+			config_path = "config.yaml"
+		elif "example_config.yaml" not in config_files:
+			print("Neither 'config.yaml' nor 'example_config.yaml' is present. Abort")
+			return
+		else:
+			print("No 'config.yaml' in current directory, using 'example_config.yaml'")
+
+		with open(config_path, 'r') as f:
 			settings = yaml.load(f, Loader=Loader)
 			print(settings)
 			selected_db = settings["settings"]["database"]
@@ -58,9 +73,9 @@ class MainManager():
 			if settings["settings"]["view"] == "cli":
 				self.app = CLIApp(self.controller, CLIView())
 			if settings["settings"]["view"] == "gui":
-				self.app = QTApp(self.controller, sys.argv)
+				self.app = QTApp(self.controller, python_args)
 
 
 if __name__ == "__main__":
-	Manager = MainManager()
+	Manager = MainManager(sys.argv)
 	Manager.app.run()
