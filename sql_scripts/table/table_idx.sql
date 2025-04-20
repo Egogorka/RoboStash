@@ -1,5 +1,5 @@
 -- Индексы по ip
-CREATE INDEX idx_fact_logs_date ON fact_logs (ip_id, date);
+CREATE INDEX idx_fact_logs_date ON fact_logs ( ip_id, year, month, day);
 --CLUSTER fact_logs USING idx_fact_logs_date;
 CREATE INDEX idx_fact_logs_year_month ON fact_logs (ip_id, year, month);
 -- для внешних ключей
