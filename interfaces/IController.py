@@ -53,6 +53,16 @@ class IController(ABC):
         pass
 
     @abstractmethod
+    def create_tables(self, sql_files_directory=None):
+        """Создает таблицы и индексы."""
+        pass
+
+    @abstractmethod
+    def create_views(self, sql_files_directory=None):
+        """Создает представления."""
+        pass
+
+    @abstractmethod
     def get_requests_by_ip_and_date(self) -> pd.DataFrame:
         """
         Gets all of the entries from database
