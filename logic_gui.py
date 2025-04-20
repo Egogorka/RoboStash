@@ -22,19 +22,19 @@ class LogAnalyzerController():
         return file_path if file_path else None
 
     def get_date_value_pairs(self):
-        df = self.db.get_view_data("view_count_requests_by_day")
+        df = self.db.get_view_data("view_count_requests_by_day", 10)
         dict = df.to_dict(orient='records')
         date_value_pairs = [(item["date"], item["total_requests"]) for item in dict]
         return date_value_pairs
     
     def get_ip_data(self):
-        df = self.db.get_view_data("view_count_requests_by_day")
+        df = self.db.get_view_data("view_count_requests_by_day", 10)
         dict = df.to_dict(orient='records')
         ip_data = {item["ip_address"]: item["total_requests"] for item in dict}
         return ip_data
     
     def get_request_data(self):
-        df = self.db.get_view_data("view_count_ip_requests")
+        df = self.db.get_view_data("view_count_ip_requests", 10)
         sample_data = df.to_dict(orient='records')
         return sample_data
     
@@ -42,7 +42,7 @@ class LogAnalyzerController():
         self.gui.status_bar.showMessage(result_string, 3000)
 
     def get_error_data(self):
-        df = self.db.get_view_data("view_count_failed_requests_by_day")
+        df = self.db.get_view_data("view_count_failed_requests_by_day", 10)
         dict = df.to_dict(orient='records')
         error_data = [(item["date"], item["total_failed"]) for item in dict]
         return error_data
