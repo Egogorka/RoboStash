@@ -15,7 +15,7 @@ class UserAgents:
         self.device_model = args[2]
         self.os = args[3]
         self.os_version = args[4]
-        self.browser_type = args[5]
+        self.browser_family = args[5]
         self.browser_version = args[6]
         self.all = args
 
@@ -27,8 +27,8 @@ class UserAgents:
             "device_type"       : self.device_type,
             "device_brand"      : self.device_brand,
             "device_model"      : self.device_model,
-            "os"                : self.os,
+            "os_family"                : self.os,
             "os_version"        : self.os_version,
-            "browser_type"      : self.browser_type,
+            "browser_family"      : self.browser_family,
             "browser_version"   : self.browser_version,
         }
