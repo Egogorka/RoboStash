@@ -91,10 +91,10 @@ class LogAnalyzerGUI(QMainWindow):
     def _connect_actions(self):
         self.browse_btn.clicked.connect(self.handle_browse) 
         self.load_btn.clicked.connect(self.load_log_file)     
-        self.export_btn.clicked.connect(self.dummy_func)   #add btn func
+        self.export_btn.clicked.connect(self.export_db)
 
-    def dummy_func(self):
-        print("click")
+    def export_db(self):
+        LogAnalyzerController.save_to_csv()
 
     def handle_browse(self):
         file_path = LogAnalyzerController.get_file_path()

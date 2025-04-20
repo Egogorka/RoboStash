@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QFileDialog
 
 import tkinter as tk
+import os
 from tkinter import filedialog
 
 
@@ -52,5 +53,21 @@ class LogAnalyzerController():
         dict = df.to_dict(orient='records')
         error_data = {item["status_code"]: item["total"] for item in dict}
         return error_data
+    
+    def save_to_csv(self, output_directory: str = './csv_files'):
+        for view_name in ["view_requests_by_ip_day", "view_count_requests_by_day", "view_top_ips", 
+                      "view_count_ip_requests", "view_count_failed_requests_by_day", "view_count_status_code", 
+                      "view_fact_logs"]:
+            print(f"Получаем данные для представления: {view_name}")
+            
+            df = self.db.get_view_data(view_name)
+
+            field_names = df.columns.tolist()
+            print(f"Названия полей для {view_name}: {', '.join(map(str, field_names))}")
+
+            csv_filename = os.path.join(output_directory, f"{view_name}.csv")
+
+            self.db.save_dict_to_csv(df.to_dict(orient='records'), csv_filename)
+            print(f"Данные для представления {view_name} сохранены в файл {csv_filename}")
         
         
