@@ -47,11 +47,9 @@ class MainManager():
 				selected_db = "plug"
 
 			if selected_db == "plug":
-				db = DBPlug()
+				db = DBPlug(settings["databases"][selected_db])
 			if selected_db == "postgreSQL":
-				db = PostgreSQL_DB()
-
-			db.initialize(settings["database"])
+				db = PostgreSQL_DB(settings["databases"][selected_db])
 
 			# create controller
 			self.controller = Controller(parser=parser, db=db)

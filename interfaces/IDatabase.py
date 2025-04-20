@@ -1,7 +1,15 @@
 from abc import ABC, abstractmethod
 import pandas as pd
 
+from model.Entry import Entry as IEntry
+from typing import List
+
 class IDatabase(ABC):
+
+    @abstractmethod
+    def __init__(self, connection_params):
+        pass  # set configuration for connection
+
     @abstractmethod
     def _connect(self):
         """Устанавливает подключение к базе данных."""
@@ -13,17 +21,17 @@ class IDatabase(ABC):
         pass
 
     @abstractmethod
-    def create_tables(self, sql_files_directory):
+    def create_tables(self, sql_files_directory=None):
         """Создает таблицы и индексы."""
         pass
 
     @abstractmethod
-    def create_views(self, sql_files_directory):
+    def create_views(self, sql_files_directory=None):
         """Создает представления."""
         pass
 
     @abstractmethod
-    def load_log(self, log_path: str):
+    def load_log(self, entries: List[IEntry]):
         """Загружает лог-файл в базу данных."""
         pass
 
@@ -35,6 +43,10 @@ class IDatabase(ABC):
         :param view_name: Название представления в базе данных.
         :return: DataFrame с данными из представления.
         """
+        pass
+
+    @abstractmethod
+    def get_views(self) -> List[str]:
         pass
 
     @abstractmethod

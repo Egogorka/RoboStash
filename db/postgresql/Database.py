@@ -1,16 +1,32 @@
-from IDatabase import IDatabase
-from PostgresLoader import PostgresLoader
+from interfaces.IDatabase import IDatabase
+from db.postgresql.PostgresLoader import PostgresLoader
 import psycopg2
-import glob 
+import glob
 import pandas as pd
 
+from model.Entry import Entry as IEntry
+from typing import List
+
+
 class Database(IDatabase):
+
     def __init__(self, connection_params):
         self.connection_params = connection_params
         self.loader = PostgresLoader(self._connect_function)
 
     def _connect_function(self):
-        return psycopg2.connect(**self.connection_params)
+        dbname = self.connection_params["dbname"]
+        user = self.connection_params["user"]
+        password = self.connection_params["password"]
+        port = self.connection_params["port"]
+        host = self.connection_params["host"]
+        return psycopg2.connect(
+            dbname=dbname,
+            user=user,
+            password=password,
+            host=host,
+            port=port
+        )
 
     def _connect(self):
         self.conn = self._connect_function()
@@ -24,12 +40,14 @@ class Database(IDatabase):
 
     def create_tables(self, sql_files_directory='./sql_scripts/table'):
         self.execute_sql_files_directory(sql_files_directory)
-    
+
     def create_views(self, sql_files_directory='./sql_scripts/views'):
         self.execute_sql_files_directory(sql_files_directory)
 
-    def load_log(self, log_path: str):
-        self.loader.load_log(log_path)
+    def load_log(self, entries: List[IEntry]):
+        logs = [entry.all for entry in entries]
+        parsed_ua = [entry.ua.all for entry in entries]
+        self.loader.load_log(logs, parsed_ua)
 
     def get_view_data(self, view_name: str) -> pd.DataFrame:
         with self._connect_function() as conn:
