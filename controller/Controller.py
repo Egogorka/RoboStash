@@ -44,7 +44,7 @@ class Controller(IController):
 		self.cache = []  # empty the cache
 
 	def get_views(self) -> List[str]:
-		return self._db.get_views()
+		return [key for key in self._db.get_views_info().keys()]
 
 	def get_view_data(self, view_name: str) -> pd.DataFrame:
 		return self._db.get_view_data(view_name)

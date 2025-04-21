@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import pandas as pd
 
 from model.Entry import Entry as IEntry
-from typing import List
+from typing import List, Dict
 
 class IDatabase(ABC):
 
@@ -46,7 +46,7 @@ class IDatabase(ABC):
         pass
 
     @abstractmethod
-    def get_views(self) -> List[str]:
+    def get_views_info(self) -> Dict[str, str]:
         pass
 
     # @abstractmethod

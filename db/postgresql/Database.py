@@ -39,6 +39,34 @@ class Database(IDatabase):
 
     def get_views_info(self) -> dict:
         """
+        Возвращает словарь представлений и их описаний из комментариев в базе данных.
+        """
+        self._connect()
+        try:
+            self.cursor.execute("""
+                SELECT
+                    c.relname AS view_name,
+                    d.description AS view_description
+                FROM pg_class c
+                JOIN pg_namespace n ON n.oid = c.relnamespace
+                LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = 0
+                WHERE c.relkind = 'v' AND n.nspname = 'public'
+            """)
+            results = self.cursor.fetchall()
+
+            views_description = {
+                view_name: description if description else view_name
+                for view_name, description in results
+            }
+
+            return views_description
+
+        finally:
+            self._close()
+
+    @staticmethod
+    def get_views_info_old(self) -> dict:
+        """
         Возвращает словарь доступных представлений с описаниями (без обращения к БД).
         """
         views_description = {
