@@ -28,14 +28,8 @@ from PySide6.QtCharts import (
 )
 from PySide6.QtGui import QStandardItemModel, QStandardItem, QPainter, QColor
 
-from logic_gui import LogAnalyzerController
-
-from applications.cli.CLIApp import CLIApp
-from applications.cli.CLIView import CLIView
-from applications.gui.QTApp import QTApp
+from applications.gui.logic_gui import LogAnalyzerController
 from controller.Controller import Controller
-from db.DBPlug import DBPlug
-from parser.ParserPlug import ParserPlug
 
 class LogAnalyzerGUI(QMainWindow):
     def __init__(self):
