@@ -13,16 +13,16 @@ from interfaces.IEntry import IEntry
 
 
 class Database(IDatabase):
-    def __init__(self, connection_params):
-        self.connection_params = connection_params
+    def __init__(self, settings):
+        self.settings = settings
         self.loader = PostgresLoader(self._connection_args())
 
         # Создаем строку подключения для SQLAlchemy
-        user = self.connection_params['user']
-        password = self.connection_params['password']
-        host = self.connection_params['host']
-        port = self.connection_params['port']
-        dbname = self.connection_params['dbname']
+        user = self.settings['user']
+        password = self.settings['password']
+        host = self.settings['host']
+        port = self.settings['port']
+        dbname = self.settings['dbname']
 
         self.engine = create_engine(
             f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}'
@@ -32,11 +32,11 @@ class Database(IDatabase):
 
     def _connection_args(self):
         return {
-            "user": self.connection_params['user'],
-            "password": self.connection_params['password'],
-            "host": self.connection_params['host'],
-            "port": self.connection_params['port'],
-            "dbname": self.connection_params['dbname'],
+            "user": self.settings['user'],
+            "password": self.settings['password'],
+            "host": self.settings['host'],
+            "port": self.settings['port'],
+            "dbname": self.settings['dbname'],
         }
 
     def _connect(self):
@@ -49,7 +49,14 @@ class Database(IDatabase):
         if hasattr(self, 'conn') and self.conn:
             self.conn.close()
 
-    def create_tables(self, sql_files_directory='./sql_scripts/table'):
+    def create_tables(self, sql_files_directory=None):
+        if sql_files_directory is None:
+            sql_files_directory = self.settings["scripts"]["tables"]
+        self.execute_sql_files_directory(sql_files_directory)
+
+    def create_views(self, sql_files_directory=None):
+        if sql_files_directory is None:
+            sql_files_directory = self.settings["scripts"]["views"]
         self.execute_sql_files_directory(sql_files_directory)
 
     def get_views_info(self) -> dict:
@@ -94,9 +101,6 @@ class Database(IDatabase):
             "view_fact_logs": "Полное представление логов с расшифровкой связанных справочников: IP, user-agent, протоколы, API и прочее."
         }
         return views_description
-
-    def create_views(self, sql_files_directory='./sql_scripts/views'):
-        self.execute_sql_files_directory(sql_files_directory)
 
     def load_log(self, entries: List[IEntry]):
         self.loader.load_log(entries)

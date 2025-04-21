@@ -13,7 +13,7 @@ databases:
     scripts:
       insert: ""
       staging_logs: ""
-      table: "./sql_scripts/table"
+      tables: "./sql_scripts/table"
       views: "./sql_scripts/views"
 
 settings:
