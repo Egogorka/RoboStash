@@ -98,24 +98,8 @@ class Database(IDatabase):
     def create_views(self, sql_files_directory='./sql_scripts/views'):
         self.execute_sql_files_directory(sql_files_directory)
 
-    def load_log(self, log_path: str):
-        if not hasattr(self, 'loader'):
-            self.loader = PostgresLoader(self.connection_params)
-        p = Parser()
-        start = time.time()
-        
-        # Загрузка лога
-        self.loader.load_log(p.parse(log_path))
-        
-        end = time.time()
-        
-        # Формируем строку с результатами
-        result_message = f"Загрузка лог-файла {log_path} завершена за {end - start:.2f} секунд"
-        
-        # Передаем результат в контроллер
-        self.controller.db_load_result(result_message)
-        
-        logging.info(f"Database: load_log: Загрузка лога завершена за {end - start:.2f} секунд")
+    def load_log(self, entries: List[IEntry]):
+        self.loader.load_log(entries)
 
     def get_view_data(self, view_name: str, top_n: int = None) -> pd.DataFrame:
         query = f"SELECT * FROM {view_name}"
