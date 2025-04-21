@@ -40,35 +40,34 @@ class MainManager():
 		if "config.yaml" in config_files:
 			config_path = "config.yaml"
 		elif "example_config.yaml" not in config_files:
-			print("Neither 'config.yaml' nor 'example_config.yaml' is present. Abort")
+			logging.info("Neither 'config.yaml' nor 'example_config.yaml' is present. Abort")
 			return
 		else:
-			print("No 'config.yaml' in current directory, using 'example_config.yaml'")
+			logging.info("No 'config.yaml' in current directory, using 'example_config.yaml'")
 
 		with open(config_path, 'r') as f:
 			settings = yaml.load(f, Loader=Loader)
-			print(settings)
 			selected_db = settings["settings"]["database"]
 
 			# set parser
 			if settings["settings"]["parser"] == "default":
-				print("Default parser is used")
+				logging.info("Default parser is used")
 				parser = Parser()
 			else:
 				if settings["settings"]["parser"] != "plug":
-					print("Name for parser not found, plug is used")
+					logging.info("Name for parser not found, plug is used")
 				else:
-					print("Plug is used for parser")
+					logging.info("Plug is used for parser")
 				parser = ParserPlug()
 
 			# set database
 			db = None
 			if selected_db not in settings["databases"]:
-				print("Name for database not found, plug is used")
 				selected_db = "plug"
 
 			if selected_db == "plug":
 				db = DBPlug(settings["databases"][selected_db])
+				logging.info("Name for database not found, plug is used")
 			if selected_db == "postgreSQL":
 				db = PostgreSQL_DB(settings["databases"][selected_db])
 
