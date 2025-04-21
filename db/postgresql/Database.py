@@ -1,6 +1,3 @@
-from interfaces.IDatabase import IDatabase
-from parser.PostgresLoader import PostgresLoader
-from parser.Parser import Parser
 import psycopg2
 import glob
 import pandas as pd
@@ -8,24 +5,42 @@ import time
 import logging
 from sqlalchemy import create_engine
 
+from interfaces.IDatabase import IDatabase
+from db.postgresql.PostgresLoader import PostgresLoader
+
+from typing import List
+from interfaces.IEntry import IEntry
+
+
 class Database(IDatabase):
-    def __init__(self, connection_params, controller):
+    def __init__(self, connection_params):
         self.connection_params = connection_params
-        self.controller = controller
+        self.loader = PostgresLoader(self._connection_args())
 
         # Создаем строку подключения для SQLAlchemy
-        user = connection_params['user']
-        password = connection_params['password']
-        host = connection_params['host']
-        port = connection_params['port']
-        dbname = connection_params['dbname']
+        user = self.connection_params['user']
+        password = self.connection_params['password']
+        host = self.connection_params['host']
+        port = self.connection_params['port']
+        dbname = self.connection_params['dbname']
 
         self.engine = create_engine(
             f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{dbname}'
         )
 
+
+
+    def _connection_args(self):
+        return {
+            "user": self.connection_params['user'],
+            "password": self.connection_params['password'],
+            "host": self.connection_params['host'],
+            "port": self.connection_params['port'],
+            "dbname": self.connection_params['dbname'],
+        }
+
     def _connect(self):
-        self.conn = psycopg2.connect(**self.connection_params)
+        self.conn = psycopg2.connect(**self._connection_args())
         self.cursor = self.conn.cursor()
 
     def _close(self):
@@ -79,7 +94,7 @@ class Database(IDatabase):
             "view_fact_logs": "Полное представление логов с расшифровкой связанных справочников: IP, user-agent, протоколы, API и прочее."
         }
         return views_description
-    
+
     def create_views(self, sql_files_directory='./sql_scripts/views'):
         self.execute_sql_files_directory(sql_files_directory)
 
@@ -106,12 +121,22 @@ class Database(IDatabase):
         query = f"SELECT * FROM {view_name}"
         if top_n is not None:
             query += f" LIMIT {top_n}"
-        df=pd.read_sql_query(query, self.engine)
+        df = pd.read_sql_query(query, self.engine)
         if view_name == "view_requests_by_ip_day":
             return self.get_requests_by_ip_and_date(df)
         return df
 
-    def save_dict_to_csv(self, data: list[dict], filename: str):
+    @staticmethod
+    def save_dict_to_parquet(data: list[dict], filename: str):
+        """
+        Сохраняет данные в формате Parquet.
+        """
+        df = pd.DataFrame(data)
+        df.to_parquet(filename, index=False, engine='pyarrow')
+        logging.info(f"Database: Данные сохранены в файл: {filename} в формате Parquet")
+
+    @staticmethod
+    def save_dict_to_csv(data: list[dict], filename: str):
         df = pd.DataFrame(data)
         df.to_csv(filename, index=False, sep=",", encoding='utf-8')
         logging.info(f"Database: Данные сохранены в файл: {filename}")
