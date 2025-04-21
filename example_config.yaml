@@ -1,0 +1,22 @@
+# This is an example config.
+# !!! DO NOT COMMIT REAL CONFIGS TO PUBLIC REPOSITORIES !!!
+databases:
+  plug:
+    type: plug
+  postgreSQL:
+    type: postgreSQL
+    host: localhost
+    port: 5432
+    user: user
+    password: pass
+    dbname: bd_logs
+    scripts:
+      insert: ""
+      staging_logs: ""
+      tables: "./sql_scripts/table"
+      views: "./sql_scripts/views"
+
+settings:
+  database: plug
+  view: cli #cli or gui
+  parser: default #default of plug
