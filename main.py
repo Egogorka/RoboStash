@@ -21,11 +21,17 @@ import sys
 from os.path import isfile, join, dirname, splitext
 from os import listdir
 
+import logging
+from Logging.Logging_configuration.logging_basic_config import set_basic_config
+
+
 class MainManager():
 	controller = None
 	app = None
 
 	def __init__(self, python_args: list[str]):
+		set_basic_config()
+
 		cur_dir = dirname(python_args[0])
 		config_files = [f for f in listdir(cur_dir)
 			if isfile(join(cur_dir, f)) and splitext(f)[1] == ".yaml"
