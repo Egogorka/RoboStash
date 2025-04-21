@@ -56,6 +56,12 @@ class LogAnalyzerGUI(QMainWindow):
         load_layout.addWidget(self.load_btn)
         load_group.setLayout(load_layout)
 
+        status_group = QGroupBox("Export Status")
+        self.status_bar = QStatusBar()
+        status_layout = QHBoxLayout()
+        status_layout.addWidget(self.status_bar)
+        status_group.setLayout(status_layout)
+
         export_group = QGroupBox("Data Export")
         self.format_combo = QComboBox()
         self.format_combo.addItems(["CSV", "Parquet"])
@@ -70,20 +76,23 @@ class LogAnalyzerGUI(QMainWindow):
         self.tabs = QTabWidget()
         self._init_tabs()
         self._connect_actions()
-        self.status_bar = QStatusBar()
-        self.setStatusBar(self.status_bar)
 
         main_layout.addWidget(load_group)
+        main_layout.addWidget(status_group)
         main_layout.addWidget(export_group)
         main_layout.addWidget(self.tabs)
 
     def _connect_actions(self):
         self.browse_btn.clicked.connect(self.handle_browse) 
         self.load_btn.clicked.connect(self.load_log_file)     
-        self.export_btn.clicked.connect(self.dummy_func)   #add btn func
+        self.export_btn.clicked.connect(self.export_db)
 
-    def dummy_func(self):
-        print("click")
+    def export_db(self):
+        format = self.format_combo.currentData()
+        if format == "CSV":
+            LogAnalyzerController.save_to_csv()
+        elif format == "Parquet":
+            pass
 
     def handle_browse(self):
         file_path = LogAnalyzerController.get_file_path()
@@ -99,6 +108,7 @@ class LogAnalyzerGUI(QMainWindow):
             self.status_bar.showMessage("Error: No file selected", 3000)
             return False
         Controller.parse(Controller, file_path)
+        self._init_tabs()
 
     def _init_tabs(self):
         self.tabs = QTabWidget()
@@ -123,7 +133,7 @@ class LogAnalyzerGUI(QMainWindow):
         line_chart.setTitle("Requests by Date")
         line_series = QLineSeries()
 
-        date_value_pairs = LogAnalyzerController.get_date_value_pairs()
+        date_value_pairs = LogAnalyzerController.get_date_value_pairs(LogAnalyzerController)
 
         for i, (date, value) in enumerate(date_value_pairs):
             line_series.append(i, value)
@@ -148,7 +158,7 @@ class LogAnalyzerGUI(QMainWindow):
         bar_chart.setTitle("Top IPs by Requests")
         bar_series = QBarSeries()
 
-        ip_data = LogAnalyzerController.get_ip_data()
+        ip_data = LogAnalyzerController.get_ip_data(LogAnalyzerController)
         
         bar_set = QBarSet("Requests")
         for count in ip_data.values():
@@ -194,15 +204,19 @@ class LogAnalyzerGUI(QMainWindow):
         ]
         model.setHorizontalHeaderLabels(headers)
         
-        sample_data = LogAnalyzerController.get_request_data()
+        sample_data = LogAnalyzerController.get_request_data(LogAnalyzerController)
 
         for data in sample_data:
             row = [
                 QStandardItem(data["ip"]),
                 QStandardItem(data["protocol"]),
-                QStandardItem(data["device"]),
-                QStandardItem(data["browser"]),
-                QStandardItem(data["version"]),
+                QStandardItem(data["device_type"]),
+                QStandardItem(data["os_family"]),
+                QStandardItem(data["os_version"]),
+                QStandardItem(data["browser_family"]),
+                QStandardItem(data["browser_version"]),
+                QStandardItem(data["device_brand"]),
+                QStandardItem(data["device_model"]),
                 QStandardItem(str(data["total"]))
             ]
             model.appendRow(row)
@@ -216,10 +230,14 @@ class LogAnalyzerGUI(QMainWindow):
         header = self.ip_table.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # IP
         header.setSectionResizeMode(1, QHeaderView.ResizeToContents)  # Protocol
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Device
-        header.setSectionResizeMode(3, QHeaderView.Stretch)          # Browser
-        header.setSectionResizeMode(4, QHeaderView.ResizeToContents) # Version
-        header.setSectionResizeMode(5, QHeaderView.ResizeToContents) # Total
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # Device Type
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # OS Family
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # OS Version
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # Browser Family
+        header.setSectionResizeMode(6, QHeaderView.ResizeToContents)  # Browser Version
+        header.setSectionResizeMode(7, QHeaderView.ResizeToContents)  # Device Brand
+        header.setSectionResizeMode(8, QHeaderView.ResizeToContents)  # Device Model
+        header.setSectionResizeMode(9, QHeaderView.ResizeToContents)  # Total Requests
         
         layout.addWidget(self.ip_table)
         self.ip_table_tab.setLayout(layout)
@@ -231,7 +249,7 @@ class LogAnalyzerGUI(QMainWindow):
         line_chart.setTitle("Error Trends")
         line_series = QLineSeries()
 
-        error_data = LogAnalyzerController.get_error_data()
+        error_data = LogAnalyzerController.get_error_data(LogAnalyzerController)
         for i, (date, count) in enumerate(error_data):
             line_series.append(i, count)
             line_series.setName(f"{date}: {count} errors")
@@ -260,7 +278,7 @@ class LogAnalyzerGUI(QMainWindow):
         pie_chart.legend().setAlignment(Qt.AlignRight)
         pie_chart.legend().setMarkerShape(QLegend.MarkerShapeCircle)
 
-        error_types = LogAnalyzerController.get_error_types()
+        error_types = LogAnalyzerController.get_error_types(LogAnalyzerController)
 
         colors = [
             "#e74c3c", "#c0392b", "#e67e22", "#d35400", 
@@ -269,13 +287,16 @@ class LogAnalyzerGUI(QMainWindow):
         pie_series = QPieSeries()
         color_index = 0
 
-        for category, errors in error_types.items():
-            for error_code, count in errors.items():
-                slice = pie_series.append(f"{error_code} ({count})", count)
-                slice.setColor(QColor(colors[color_index % len(colors)]))
-                slice.setLabelVisible(True)
-                slice.setLabelArmLengthFactor(0.2)
-                color_index += 1
+        for i, record in enumerate(error_types):
+            status_code = record['status_code']
+            count = record['total']
+            name = f"{status_code} {self._get_status_name(status_code)}"
+    
+            slice = pie_series.append(f"{name} ({count})", count)
+            slice.setColor(QColor(colors[color_index % len(colors)]))
+            slice.setLabelVisible(True)
+            slice.setLabelArmLengthFactor(0.2)
+            color_index += 1
         
         pie_series.setLabelsVisible(True)
 
