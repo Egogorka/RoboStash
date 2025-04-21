@@ -1,11 +1,11 @@
-import time
-import logging
-
-from parser.log_pr import open_logfile, get_all_logs, get_ua_list, ua_parser
 from interfaces.IParser import IParser, IEntry
-from model.Entry import Entry
 from typing import List
 
+from model.Entry import Entry
+from parser.log_pr import open_logfile, get_all_logs, get_ua_list, ua_parser
+
+import time
+import logging
 
 class Parser(IParser):
     def _parse_logs(self, file_path):

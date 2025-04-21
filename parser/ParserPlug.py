@@ -7,7 +7,7 @@ from model.Entry import Entry
 class ParserPlug(IParser):
 
 	def parse(self, path: str) -> List[IEntry]:
-		print("Plugging your pipes hehe")
+		print("Plug Parser is used")
 		return [
 			Entry(
 				'15.74.45.114', '-', '-', '2023-01-05', '00:00:03', '+0300', 'DELETE', '/usr/admin',
