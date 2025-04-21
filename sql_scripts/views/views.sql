@@ -4,7 +4,7 @@ CREATE OR REPLACE VIEW view_requests_by_ip_day AS
 SELECT
     ip.ip_address, -- IP-адрес клиента
     MAKE_DATE(fl.year, fl.month, fl.day) as date, -- Дата запроса (год, месяц, день)
-    COUNT(*) AS count, -- Общее количество запросов от IP в этот день
+    COUNT(*) AS count -- Общее количество запросов от IP в этот день
 FROM fact_logs fl
 JOIN dim_ip ip ON fl.ip_id = ip.id
 GROUP BY ip.ip_address, fl.year, fl.month, fl.day
@@ -81,8 +81,6 @@ COMMENT ON VIEW view_requests_by_ip_day IS 'Количество запросо�
 COMMENT ON COLUMN view_requests_by_ip_day.ip_address IS 'IP-адрес клиента';
 COMMENT ON COLUMN view_requests_by_ip_day.date IS 'Дата запроса (год, месяц, день)';
 COMMENT ON COLUMN view_requests_by_ip_day.count IS 'Общее количество запросов от IP в этот день';
-COMMENT ON COLUMN view_requests_by_ip_day.failure_count IS 'Количество неуспешных (ошибочных) запросов от IP в этот день';
-
 
 -- Комментарии к представлению view_count_requests_by_day
 COMMENT ON VIEW view_count_requests_by_day IS 'Общее количество запросов по каждому дню';
