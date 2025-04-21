@@ -86,6 +86,46 @@ class Database(IDatabase):
         finally:
             self._close()
 
+    def get_tables_info(self) -> dict:
+        """
+        Возвращает словарь таблиц и их описаний из комментариев в базе данных.
+        """
+        self._connect()
+        try:
+            self.cursor.execute("""
+                SELECT
+                    c.relname AS table_name,
+                    d.description AS table_description
+                FROM pg_class c
+                JOIN pg_namespace n ON n.oid = c.relnamespace
+                LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = 0
+                WHERE c.relkind = 'r' AND n.nspname = 'public'
+            """)
+            results = self.cursor.fetchall()
+
+            tables_description = {
+                table_name: description if description else table_name
+                for table_name, description in results
+            }
+
+            return tables_description
+        finally:
+            self._close()
+
+    def get_database_size(self) -> str:
+        """
+        Возвращает общий размер базы данных в читаемом формате (например, MB, GB).
+        """
+        self._connect()
+        try:
+            self.cursor.execute("""
+                SELECT pg_size_pretty(pg_database_size(current_database()));
+            """)
+            size = self.cursor.fetchone()[0]
+            return size
+        finally:
+            self._close()
+
     @staticmethod
     def get_views_info_old(self) -> dict:
         """
