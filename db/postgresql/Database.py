@@ -88,7 +88,9 @@ class Database(IDatabase):
         df.to_csv(filename, index=False, sep=",", encoding='utf-8')
         logging.info(f"Database: Данные сохранены в файл: {filename}")
 
-    def get_requests_by_ip_and_date(self, df: pd.DataFrame) -> pd.DataFrame:
+
+    @staticmethod
+    def get_requests_by_ip_and_date(df: pd.DataFrame) -> pd.DataFrame:
         """
         Возвращает сводную таблицу: IP в строках, даты в столбцах, значения — количество запросов.
         """
@@ -100,7 +102,6 @@ class Database(IDatabase):
         )
         return pivot_df
 
-    
     def execute_sql_files_directory(self, sql_files_directory):
         self._connect()
         try:

@@ -62,10 +62,10 @@ class IController(ABC):
         """Создает представления."""
         pass
 
-    @abstractmethod
-    def get_requests_by_ip_and_date(self) -> pd.DataFrame:
-        """
-        Gets all of the entries from database
-        :return: list of entries
-        """
-        pass
+    # @abstractmethod
+    # def get_requests_by_ip_and_date(self) -> pd.DataFrame:
+    #     """
+    #     Gets all of the entries from database
+    #     :return: list of entries
+    #     """
+    #     pass

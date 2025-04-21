@@ -49,8 +49,8 @@ class Controller(IController):
 	def get_view_data(self, view_name: str) -> pd.DataFrame:
 		return self._db.get_view_data(view_name)
 
-	def get_requests_by_ip_and_date(self):
-		return self._db.get_requests_by_ip_and_date()
+	# def get_requests_by_ip_and_date(self):
+	# 	return self._db.get_requests_by_ip_and_date()
 
 	def create_tables(self, sql_files_directory=None):
 		return self._db.create_tables(sql_files_directory)

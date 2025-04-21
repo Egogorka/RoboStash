@@ -49,11 +49,11 @@ class IDatabase(ABC):
     def get_views(self) -> List[str]:
         pass
 
-    @abstractmethod
-    def get_requests_by_ip_and_date(self) -> pd.DataFrame:
-        """
-        Абстрактный метод для получения сводных данных по запросам по IP и дате.
-        
-        :return: Сводная таблица с количеством запросов по IP и дате.
-        """
-        pass
+    # @abstractmethod
+    # def get_requests_by_ip_and_date(self) -> pd.DataFrame:
+    #     """
+    #     Метод для получения сводных данных по запросам по IP и дат из датафрейма
+    #
+    #     :return: Сводная таблица с количеством запросов по IP и дате.
+    #     """
+    #     pass

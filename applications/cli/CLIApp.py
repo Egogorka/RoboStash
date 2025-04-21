@@ -23,12 +23,12 @@ class CLIApp(IApp):
                      self.controller.get_view_data(args[0]).itertuples(index=False, name=None)]
                 )
             ),
-            "get_requests_by_ip_and_date": (lambda *args:
-                self.view.handle_getall(  # one needs to put dict there
-                    [IEntry(*e) for e in
-                    self.controller.get_requests_by_ip_and_date().itertuples(index=False, name=None)]
-                )
-            ),
+            # "get_requests_by_ip_and_date": (lambda *args:
+            #     self.view.handle_getall(  # one needs to put dict there
+            #         [IEntry(*e) for e in
+            #         self.controller.get_requests_by_ip_and_date().itertuples(index=False, name=None)]
+            #     )
+            # ),
             "create_tables": (lambda *args: self.controller.create_tables(*args)),
             "create_views": (lambda *args: self.controller.create_views(*args)),
             "stop": (lambda *args: self.stop()),
@@ -40,7 +40,7 @@ class CLIApp(IApp):
             "post": "post",
             "get_views": "get_views",
             "get_view_data": "get_view_data",
-            "get_requests_by_ip_and_date": "get_requests",
+            # "get_requests_by_ip_and_date": "get_requests",
             "create_tables": "create_tables",
             "create_views": "create_views",
             "stop": "Stops the program. No arguments",
