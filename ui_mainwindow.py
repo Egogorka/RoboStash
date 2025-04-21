@@ -94,7 +94,11 @@ class LogAnalyzerGUI(QMainWindow):
         self.export_btn.clicked.connect(self.export_db)
 
     def export_db(self):
-        LogAnalyzerController.save_to_csv()
+        format = self.format_combo.currentData()
+        if format == "csv":
+            LogAnalyzerController.save_to_csv()
+        elif format == "Parquet":
+            pass
 
     def handle_browse(self):
         file_path = LogAnalyzerController.get_file_path()
