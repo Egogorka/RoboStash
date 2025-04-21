@@ -51,6 +51,7 @@ class CLIApp(IApp):
 
 
     def run(self):
+        self.view.msg("Welcome to CLI interface, enter 'help' for awailable commands")
         while self.running:
             command, args = self.view.input()
             self.do_command(command, args)
